@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/places")
-@CrossOrigin(origins = "http://localhost:5173") // React 개발 서버
+@CrossOrigin(origins = "http://localhost:5173")
 public class PlacesController {
 
     private final KakaoLocalService kakaoLocalService;
