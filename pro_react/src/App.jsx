@@ -1,17 +1,18 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Header from "./components/Header/Header";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AllTasks from "./pages/AllTasks";
 import WeekTasks from "./pages/WeekTasks";
 import MonthTasks from "./pages/MonthTasks";
 import SharedTasks from "./pages/SharedTasks";
+import WeatherBoard from "./pages/WeatherBoard";
+import Header from "./components/Header/Header";
 import AddTaskPage from "./pages/AddTaskPage";
-import KakaoMapBox from "./pages/KakaoMapBox"; // ✅ 통합된 지도 컴포넌트
-import "./styles/layout.css";
+import KakaoMapBox from "./pages/KakaoMapBox"; 
 
 function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <Header />
+      <WeatherBoard />
       <div className="main-layout">
         <div className="content">
           <Routes>
@@ -26,7 +27,7 @@ function App() {
         {/* 지도 검색영역 */}
         <KakaoMapBox />
       </div>
-    </Router>
+    </BrowserRouter>
   );
 }
 
