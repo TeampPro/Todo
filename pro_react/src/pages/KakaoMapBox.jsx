@@ -7,6 +7,7 @@ function KakaoMapBox() {
   const [mapType, setMapType] = useState("roadmap");
   const mapRef = useRef(null);
   const markerRef = useRef(null);
+  const infoWindowRef = useRef(null); // ✅ 인포윈도우 추적용
 
   // ✅ Kakao SDK 로드
   useEffect(() => {
@@ -46,7 +47,7 @@ function KakaoMapBox() {
     const createdMap = new window.kakao.maps.Map(container, options);
     setMap(createdMap);
 
-    // 기본 마커 표시 (인포윈도우 제거)
+    // 기본 마커
     const markerPosition = new window.kakao.maps.LatLng(33.450701, 126.570667);
     const marker = new window.kakao.maps.Marker({ position: markerPosition });
     marker.setMap(createdMap);
@@ -65,8 +66,9 @@ function KakaoMapBox() {
         const moveLatLon = new window.kakao.maps.LatLng(first.y, first.x);
         map.setCenter(moveLatLon);
 
-        // 기존 마커 제거
+        // ✅ 기존 마커와 인포윈도우 제거
         if (markerRef.current) markerRef.current.setMap(null);
+        if (infoWindowRef.current) infoWindowRef.current.close();
 
         // 새 마커 생성
         const marker = new window.kakao.maps.Marker({
@@ -75,14 +77,23 @@ function KakaoMapBox() {
         });
         markerRef.current = marker;
 
-        // 인포윈도우 내용: 장소명 + 큰지도보기 + 길찾기
+        // ✅ 인포윈도우 내용 (이름, 주소, 전화번호 포함)
+        const placeName = first.place_name || "이름 정보 없음";
+        const address =
+          first.road_address_name ||
+          first.address_name ||
+          "주소 정보 없음";
+        const phone = first.phone || "전화번호 없음";
+
         const iwContent = `
-          <div style="padding:5px;font-size:13px;">
-            <b>${first.place_name}</b><br>
-            <a href="https://map.kakao.com/link/map/${first.place_name},${first.y},${first.x}" 
-               target="_blank" style="color:blue;">큰지도보기</a>
-            <a href="https://map.kakao.com/link/to/${first.place_name},${first.y},${first.x}" 
-               target="_blank" style="color:blue;margin-left:5px;">길찾기</a>
+          <div style="padding:8px; font-size:13px; line-height:1.5;">
+            <b style="font-size:14px;">${placeName}</b><br/>
+            📞 ${phone}<br/>
+            📍 ${address}<br/>
+            <a href="https://map.kakao.com/link/map/${placeName},${first.y},${first.x}" 
+              target="_blank" style="color:blue;">큰지도보기</a>
+          <a href="https://map.kakao.com/link/to/${placeName},${first.y},${first.x}" 
+              target="_blank" style="color:blue; margin-left:5px;">길찾기</a>
           </div>
         `;
 
@@ -90,6 +101,7 @@ function KakaoMapBox() {
           content: iwContent,
         });
         infowindow.open(map, marker);
+        infoWindowRef.current = infowindow; // ✅ 추적 저장
       } else {
         alert("검색 결과가 없습니다.");
       }
